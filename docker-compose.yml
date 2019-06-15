@@ -20,6 +20,7 @@ services:
     volumes:
       - ./database:/usr/home/database
       - ./database:/docker-entrypoint-initdb.d
+      - ./etc/my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
       api:
         ipv4_address: 170.40.0.12
