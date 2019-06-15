@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  compiler:
+    image: node:alpine
+    container_name: compiler
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app/
+    command: sh -c "npm i && npm run compile:watch"
+  mysql:
+    image: mysql
+    container_name: api_db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    ports:
+      - 3306:3306
+    volumes:
+      - ./database:/usr/home/database
+      - ./database:/docker-entrypoint-initdb.d
+    networks:
+      api:
+        ipv4_address: 170.40.0.12
+  api:
+    image: node:alpine
+    container_name: api
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app/
+    command: sh -c  'npm run dev'
+    ports:
+      - 3000:3000
+      - 9229:9229
+    networks:
+      api:
+        ipv4_address: 170.40.0.11
+
+networks:
+  api:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv4: 'true'
+    ipam:
+      driver: default
+      config:
+        - subnet: 170.40.0.0/16
