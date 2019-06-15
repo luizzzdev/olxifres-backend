@@ -1,42 +1,44 @@
-const mysql = require('mysql');
+import mysql from 'mysql';
 
-let connection;
+const asArray = value => (Array.isArray(value) ? value : [value]);
 
-const connectDatabase = () => {
-  connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
+export class ConnectionFactory {
+  static getConnection() {
+    let connection;
 
-  connection.connect(function(err) {
-    if (err) {
-      console.error('Não foi possível conectar o banco de dados ' + err.stack);
-      return;
-    }
-
-    console.log('Conectado ao banco de dados MySql!' + connection.threadId);
-  });
-
-  connection.query('SELECT NOW()', (error, results, fields) => {
-    if (error) {
-      console.log(error);
-      return;
-    }
-
-    console.log(results);
-  });
-};
-
-connectDatabase();
-
-export const query = (query: string, params: any | any[]): Promise<[]> => {
-  return new Promise((resolve, reject) => {
-    connection.query(query, params, (err, results, fields) => {
-      if (err) reject(err);
-
-      resolve({ results, fields });
+    connection = mysql.createConnection({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
     });
-  });
-};
+
+    connection.connect();
+
+    return connection;
+  }
+}
+
+export class Database {
+  static query(query: string, params: any | any[] = null): Promise<{ results: []; total: number }> {
+    const connection = ConnectionFactory.getConnection();
+
+    return new Promise((resolve, reject) => {
+      connection.query(query, asArray(params), (err, results) => {
+        if (err) {
+          connection.end();
+          return reject({ error: err.stackTrace, sql: err.sql });
+        }
+        connection.end();
+        return resolve({ data: results, total: results.length });
+      });
+    });
+  }
+
+  static insert(tabela: string, campos: string[], valores: any[] = []) {
+    const sql = `INSERT INTO ${tabela}(${campos.join(', ')}) VALUES (${valores.map(val => '?').join(' ,')})`;
+
+    return this.query(sql, valores);
+  }
+}
