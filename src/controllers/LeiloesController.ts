@@ -27,4 +27,20 @@ export default class LeiloesController {
 
     return response.json(data);
   }
+
+  async buscarLeilaoPorId(request, response, next) {
+    let idLeilao = request.params.idLeilao;
+    let sql = 'SELECT * FROM leilao l INNER JOIN animal a ON l.id_animal = a.id_animal WHERE l.id_leilao = ?';
+
+    const data = await Database.query(sql, idLeilao);
+
+    const leilao = data.data.find(leilao => (leilao.id_leilao = idLeilao));
+
+    sql = 'SELECT * FROM lance WHERE id_leilao = ?';
+    const lances = await Database.query(sql, idLeilao);
+
+    leilao.lances = lances.data.reverse();
+
+    return response.json(data);
+  }
 }

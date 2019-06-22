@@ -4,14 +4,30 @@ const router = new Router();
 
 import LeiloesController from './controllers/LeiloesController';
 import UsuariosController from './controllers/UsuariosController';
+import LancesController from './controllers/LancesController';
 
 const leiloesController = new LeiloesController();
 const usuariosController = new UsuariosController();
+const lancesController = new LancesController();
 
-router.post('/login', (req, res, next) => usuariosController.login(req, res, next));
+function SafeRun(cb) {
+  return function(req, res, next) {
+    try {
+      cb(req, res, next);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
 
-router.post('/usuario', (req, res, next) => usuariosController.cadastrar(req, res, next));
+router.post('/login', SafeRun(usuariosController.login));
 
-router.get('/leiloes', (req, res, next) => leiloesController.index(req, res, next));
+router.post('/usuario', SafeRun(usuariosController.cadastrar));
+
+router.get('/leiloes', SafeRun(leiloesController.index));
+
+router.get('/leilao/:idLeilao', SafeRun(leiloesController.buscarLeilaoPorId));
+
+router.post('/lance/:idLeilao', SafeRun(lancesController.darLance))
 
 module.exports = router;

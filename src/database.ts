@@ -27,6 +27,7 @@ export class Database {
     return new Promise((resolve, reject) => {
       connection.query(query, asArray(params), (err, results) => {
         if (err) {
+          console.error(err);
           connection.end();
           return reject({ error: err.stackTrace, sql: err.sql });
         }
