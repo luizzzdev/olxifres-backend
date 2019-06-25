@@ -34,7 +34,7 @@ export default class LeiloesController {
 
     const data = await Database.query(sql, idLeilao);
 
-    const leilao = data.data.find(leilao => (leilao.id_leilao = idLeilao));
+    const leilao = data.data.find(leilao => (leilao.id_leilao == idLeilao));
 
     sql = 'SELECT * FROM lance WHERE id_leilao = ?';
     const lances = await Database.query(sql, idLeilao);
@@ -43,4 +43,14 @@ export default class LeiloesController {
 
     return response.json(data);
   }
+
+  async buscarLeiloesPorUsuario(request, response, next){
+    let idUsuario = request.params.idUsuario;
+    let sql = 'select * from animal a inner join leilao l on l.id_animal = a.id_animal where a.id_usuario_dono in (select l.id_usuario_vendedor from leilao l where l.id_usuario_vendedor = 1)';
+
+    const data = await Database.query(sql, idUsuario);
+
+    return response.json(data)
+  }
 }
+

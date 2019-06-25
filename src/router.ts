@@ -28,6 +28,8 @@ router.get('/leiloes', SafeRun(leiloesController.index));
 
 router.get('/leilao/:idLeilao', SafeRun(leiloesController.buscarLeilaoPorId));
 
+router.get('/leiloes/:idUsuario', SafeRun(leiloesController.buscarLeiloesPorUsuario))
+
 router.post('/lance/:idLeilao', SafeRun(lancesController.darLance))
 
 module.exports = router;
