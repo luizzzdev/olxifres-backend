@@ -46,7 +46,7 @@ export default class LeiloesController {
 
   async buscarLeiloesPorUsuario(request, response, next){
     let idUsuario = request.params.idUsuario;
-    let sql = 'select * from animal a inner join leilao l on l.id_animal = a.id_animal where a.id_usuario_dono in (select l.id_usuario_vendedor from leilao l where l.id_usuario_vendedor = 1)';
+    let sql = 'select * from animal a inner join leilao l on l.id_animal = a.id_animal where a.id_usuario_dono in (select l.id_usuario_vendedor from leilao l where l.id_usuario_vendedor = ?)';
 
     const data = await Database.query(sql, idUsuario);
 
