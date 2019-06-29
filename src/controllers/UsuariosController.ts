@@ -1,43 +1,24 @@
-import UsuarioModel from '../models/Usuario';
-import { Database } from '../database';
+import Usuario from '../models/Usuario';
 
 export default class UsuarioController {
   async login(request, response, next) {
     const { email, senha } = request.body;
+    const data = await new Usuario().login(email, senha);
 
-    const data: { results: []; total: number } = await Database.query(
-      'SELECT * FROM usuario WHERE email = ? AND senha = ?',
-      [email, senha]
-    );
-
-    if (data.total > 0) {
-      return response.json(data);
+    if ('error' in data) {
+      return response.status(404).json({ error: 'Usuário ou senha incorretos!' });
     }
 
-    return response.status(404).json({ error: 'Usuário ou senha incorretos!' });
+    return response.json(data);
   }
 
   async cadastrar(request, response, next) {
-    const usuario = request.body;
+    const usuario = await new Usuario().cadastrar(request.body);
 
-    const usuarioModel = new UsuarioModel();
-
-    const usuarioJaExiste = await usuarioModel.usuarioJaCadastrado(usuario.email);
-
-    if (usuarioJaExiste) {
+    if ('error' in usuario) {
       return response.status(409).json({ error: 'Usuário já cadastrado!' });
     }
 
-    const campos = Object.keys(usuario);
-    const valores = Object.values(usuario);
-
-    let data;
-    try {
-      data = await Database.insert('usuario', campos, valores);
-    } catch (err) {
-      console.log(err);
-    }
-
-    return response.status(201).json(data);
+    return response.status(201).json(usuario);
   }
 }

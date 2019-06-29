@@ -1,17 +1,12 @@
-import { Database } from '../database';
 import util from '../util';
+import Lance from '../models/Lance';
 
 export default class LancesController {
-  async darLance(request, response, next) {
+  async criarLance(request, response, next) {
     const { idLeilao } = request.params;
     const { valor, idUsuario } = request.body;
 
-    await Database.insert(
-      'lance',
-      ['id_leilao', 'id_usuario', 'data', 'valor'],
-      [idLeilao, idUsuario, util.getData(), valor]
-    );
-
+    await new Lance().criarLance(idLeilao, idUsuario, util.getData(), valor);
     return response.status(201).json({ created: 'ok' });
   }
 }

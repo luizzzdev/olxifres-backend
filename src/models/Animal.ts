@@ -1,11 +1,13 @@
-import Model from './Model';
-import IModel from './IModel';
+import { Database, InsertResult } from '../database';
 
-class Animal extends Model implements IModel {
-  getTableName(): string {
-    throw new Error('animal');
-  }
-  getPkName(): string {
-    throw new Error('id_animal');
+export default class Animal {
+  async criarAnimal(cor: string, peso: string, raca: string, fotoBase64: string, dataNascimento: string) {
+    const result: InsertResult = await Database.insert(
+      'animal',
+      ['cor', 'peso', 'raca', 'foto', 'data_nascimento'],
+      [cor, peso, raca, fotoBase64, dataNascimento]
+    );
+
+    return result.data.insertId;
   }
 }
