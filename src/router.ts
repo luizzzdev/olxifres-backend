@@ -1,6 +1,8 @@
 const { Router } = require('express');
-
 const router = new Router();
+
+const multer = require('multer');
+const upload = multer({ dest: 'files/' });
 
 import LeiloesController from './controllers/LeiloesController';
 import UsuariosController from './controllers/UsuariosController';
@@ -28,6 +30,8 @@ router.get('/leiloes', SafeRun(leiloesController.index));
 
 router.get('/leilao/:idLeilao', SafeRun(leiloesController.buscarLeilaoPorId));
 
-router.post('/lance/:idLeilao', SafeRun(lancesController.darLance))
+router.post('/lance/:idLeilao', SafeRun(lancesController.darLance));
+
+router.post('/leilao', upload.single('foto'), SafeRun(leiloesController.criarLeilao));
 
 module.exports = router;

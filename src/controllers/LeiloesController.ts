@@ -1,4 +1,7 @@
 import { Database } from '../database';
+import moment from 'moment';
+
+const fs = require('fs');
 
 export default class LeiloesController {
   async index(request, response, next) {
@@ -42,5 +45,31 @@ export default class LeiloesController {
     leilao.lances = lances.data.reverse();
 
     return response.json(data);
+  }
+
+  async criarLeilao(request, response, next) {
+    let { dataNascimento, dataFim } = request.body;
+    const { cor, lanceMinimo, peso, raca, idUsuario } = request.body;
+
+    let fotoBase64 = null;
+    if (request.file) {
+      fotoBase64 = new Buffer(fs.readFileSync(request.file.path)).toString('base64');
+    }
+
+    const result = await Database.insert(
+      'animal',
+      ['cor', 'peso', 'raca', 'foto', 'data_nascimento'],
+      [cor, peso, raca, fotoBase64, moment(dataNascimento).format('YYYY-MM-DD')]
+    );
+
+    const idAnimal = result.data.insertId;
+
+    await Database.insert(
+      'leilao',
+      ['data', 'id_animal', 'lance_minimo', 'status', 'id_usuario_vendedor'],
+      [moment().format('YYYY-MM-DD'), idAnimal, lanceMinimo, 1, idUsuario]
+    );
+
+    return response.status(201).json({ idAnimal });
   }
 }

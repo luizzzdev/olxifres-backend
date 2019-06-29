@@ -23,6 +23,7 @@ CREATE TABLE animal(
     raca VARCHAR(255),
     peso VARCHAR(255),
     cor VARCHAR(255),
+    foto LONGTEXT,
     data_nascimento DATE,
     FOREIGN KEY(id_usuario_dono) REFERENCES usuario(id_usuario)
 );
