@@ -33,7 +33,6 @@ CREATE TABLE leilao(
     data DATE,
     id_animal INT,
     lance_minimo DOUBLE,
-    status TINYINT COMMENT '/* 0 - aberto 1 - finalizado */',
     id_usuario_vendedor INT,
     FOREIGN KEY(id_animal) REFERENCES animal(id_animal),
     FOREIGN KEY(id_usuario_vendedor) REFERENCES usuario(id_usuario)
@@ -47,3 +46,6 @@ CREATE TABLE lance(
     valor DOUBLE,
     FOREIGN KEY(id_usuario) REFERENCES usuario(id_usuario)
 );
+
+CREATE VIEW vw_leilao AS
+    SELECT l.*, (case when l.data > now() then 0 else 1 end) as status FROM leilao l;

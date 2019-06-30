@@ -6,7 +6,7 @@ const fs = require('fs');
 
 export default class Leilao {
   index(query) {
-    let sql = 'SELECT * FROM leilao l INNER JOIN animal a ON l.id_animal = a.id_animal';
+    let sql = 'SELECT * FROM vw_leilao l INNER JOIN animal a ON l.id_animal = a.id_animal';
     let options = ' ORDER BY l.data';
     const conditions: string[] = [];
 
@@ -52,7 +52,7 @@ export default class Leilao {
   }
 
   async buscarLeilaoPorId(idLeilao: number) {
-    let sql = 'SELECT * FROM leilao l INNER JOIN animal a ON l.id_animal = a.id_animal WHERE l.id_leilao = ?';
+    let sql = 'SELECT * FROM vw_leilao l INNER JOIN animal a ON l.id_animal = a.id_animal WHERE l.id_leilao = ?';
 
     const data = await Database.query(sql, idLeilao);
 
@@ -68,7 +68,7 @@ export default class Leilao {
 
   buscarLeiloesPorUsuario(idUsuario: number) {
     const sql =
-      'select * from animal a inner join leilao l on l.id_animal = a.id_animal where a.id_usuario_dono in (select l.id_usuario_vendedor from leilao l where l.id_usuario_vendedor = ?)';
+      'select * from animal a inner join vw_leilao l on l.id_animal = a.id_animal where a.id_usuario_dono in (select l.id_usuario_vendedor from vw_leilao l where l.id_usuario_vendedor = ?)';
     return Database.query(sql, idUsuario);
   }
 }
