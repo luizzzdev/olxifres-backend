@@ -22,7 +22,7 @@ export default class LeiloesController {
 
   async buscarLeiloesPorUsuario(request, response, next){
     let idUsuario = request.params.idUsuario;
-    return response.json(new Leilao().buscarLeiloesPorUsuario(idUsuario));
+    return response.json(await new Leilao().buscarLeiloesPorUsuario(idUsuario));
   }
 }
 

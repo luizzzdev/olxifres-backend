@@ -21,7 +21,7 @@ export class ConnectionFactory {
 }
 
 export class Database {
-  static query(query: string, params: any | any[] = null): Promise<{ results: []; total: number }> {
+  static query(query: string, params: any | any[] = null): Promise<{ data: []; total: number }> {
     const connection = ConnectionFactory.getConnection();
 
     return new Promise((resolve, reject) => {
@@ -41,5 +41,12 @@ export class Database {
     const sql = `INSERT INTO ${tabela}(${campos.join(', ')}) VALUES (${valores.map(val => '?').join(' ,')})`;
 
     return this.query(sql, valores);
+  }
+
+  static updateById(tabela: string, primaryKeyName: string, id: number | string, campos: []) {
+    const sql = `UPDATE ${tabela} SET ${Object.keys(campos).map(
+      campo => ` ${campo} = ?`
+    )} WHERE ${primaryKeyName} = ${id}`;
+    return this.query(sql, Object.values(campos));
   }
 }

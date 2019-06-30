@@ -24,6 +24,8 @@ function SafeRun(cb) {
 
 router.post('/login', SafeRun(usuariosController.login));
 
+router.put('/usuario', SafeRun(usuariosController.atualizar));
+
 router.post('/usuario', SafeRun(usuariosController.cadastrar));
 
 router.get('/leiloes', SafeRun(leiloesController.index));

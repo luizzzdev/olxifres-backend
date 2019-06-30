@@ -1,4 +1,5 @@
 import Usuario from '../models/Usuario';
+import { pick } from 'lodash'
 
 export default class UsuarioController {
   async login(request, response, next) {
@@ -19,5 +20,24 @@ export default class UsuarioController {
     }
 
     return response.status(201).json(usuario);
+  }
+
+  async atualizar(request, response, next) {
+    const camposUsuario = [
+      'bairro',
+      'cep',
+      'cidade',
+      'estado',
+      'logradouro',
+      'nome',
+      'numero',
+      'senha',
+      'telefone',
+    ];
+
+    const idUsuario = request.body.id_usuario;
+    const dadosUsuario = pick(request.body, camposUsuario);
+
+    return response.json(await new Usuario().atualizar(idUsuario, dadosUsuario));
   }
 }

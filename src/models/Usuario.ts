@@ -15,12 +15,16 @@ export default class Usuario {
     const usuarioJaExiste = await this.usuarioJaCadastrado(body.email);
 
     if (usuarioJaExiste) {
-      return { error: 'Usuário já cadastrado!'}
+      return { error: 'Usuário já cadastrado!' };
     }
 
     const campos = Object.keys(body);
     const valores = Object.values(body);
 
     return Database.insert('usuario', campos, valores);
+  }
+
+  atualizar(idUsuario: number, dadosUsuario: []) {
+    return Database.updateById('usuario', 'id_usuario', idUsuario, dadosUsuario);
   }
 }

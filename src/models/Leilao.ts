@@ -46,8 +46,8 @@ export default class Leilao {
 
     await Database.insert(
       'leilao',
-      ['data', 'id_animal', 'lance_minimo', 'status', 'id_usuario_vendedor'],
-      [moment(dataFim).format('YYYY-MM-DD'), idAnimal, lanceMinimo, 1, idUsuario]
+      ['data', 'id_animal', 'lance_minimo', 'id_usuario_vendedor'],
+      [moment(dataFim).format('YYYY-MM-DD'), idAnimal, lanceMinimo, idUsuario]
     );
   }
 
