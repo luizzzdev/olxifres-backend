@@ -41,13 +41,14 @@ export default class Leilao {
       peso,
       raca,
       fotoBase64,
-      moment(dataNascimento).format('YYYY-MM-DD')
+      moment(dataNascimento).format('YYYY-MM-DD'),
+      +idUsuario,
     );
 
     await Database.insert(
       'leilao',
-      ['data', 'id_animal', 'lance_minimo', 'id_usuario_vendedor'],
-      [moment(dataFim).format('YYYY-MM-DD'), idAnimal, lanceMinimo, idUsuario]
+      ['data', 'id_animal', 'lance_minimo'],
+      [moment(dataFim).format('YYYY-MM-DD'), idAnimal, lanceMinimo]
     );
   }
 
